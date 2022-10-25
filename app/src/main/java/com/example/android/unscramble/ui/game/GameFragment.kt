@@ -94,6 +94,21 @@ class GameFragment : Fragment() {
         activity?.finish()
     }
 
+    private fun onSubmitWord() {
+        val playerWord = binding.textInputEditText.text.toString()
+
+        if (viewModel.isUserWordCorrect(playerWord)) {
+            setErrorTextField(false)
+            if (viewModel.nextWord()) {
+                updateNextWordOnScreen()
+            } else {
+                showFinalScoreDialog()
+            }
+        } else {
+            setErrorTextField(true)
+        }
+    }
+
     /*
     * Sets and resets the text field error status.
     */
@@ -128,4 +143,6 @@ class GameFragment : Fragment() {
             }
             .show()
     }
+
+
 }
