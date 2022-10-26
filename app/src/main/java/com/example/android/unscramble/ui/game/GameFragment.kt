@@ -56,13 +56,18 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup a click listener for the Submit and Skip buttons.
-        binding.submit.setOnClickListener { onSubmitWord() }
-        binding.skip.setOnClickListener { onSkipWord() }
+        binding.submit.setOnClickListener {
+            onSubmitWord()
+            binding.score.text = getString(R.string.score, viewModel.score)
+            binding.wordCount.text = getString(R.string.word_count, viewModel.currentWordCount, MAX_NO_OF_WORDS)}
+        binding.skip.setOnClickListener {
+            onSkipWord()
+            binding.score.text = getString(R.string.score, viewModel.score)
+            binding.wordCount.text = getString(R.string.word_count, viewModel.currentWordCount, MAX_NO_OF_WORDS)}
         // Update the UI
         updateNextWordOnScreen()
-        binding.score.text = getString(R.string.score, 0)
-        binding.wordCount.text = getString(
-            R.string.word_count, 0, MAX_NO_OF_WORDS)
+        binding.score.text = getString(R.string.score, viewModel.score)
+        binding.wordCount.text = getString(R.string.word_count, viewModel.currentWordCount, MAX_NO_OF_WORDS)
     }
 
     /*
