@@ -1,3 +1,10 @@
+### ViewModel lifecycle
+위에서 아래로 생명 주기가 흐른다.
+Activity - onCreated
+ViewModel created
+Activity - onDestroy
+ViewModel - onCleared
+
 ### ViewModel 추가
 ```
 // add dependencie
