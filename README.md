@@ -1,4 +1,50 @@
 
+### LiveData with DataBinding
+```
+// in build.gradle(Module)
+plugins {
+   id 'com.android.application'
+   id 'kotlin-android'
+   id 'kotlin-kapt'
+}
+
+android {
+    ...
+    buildFeatures {
+        dataBinding = true
+    }
+    ...
+}
+
+// add xml tag <layout><data></data></layout> in activity 
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:tools="http://schemas.android.com/tools">
+
+   <data>
+       <variable
+           name="gameViewModel"
+           type="com.example.android.unscramble.ui.game.GameViewModel" />
+   </data>
+
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+       <TextView
+           android:id="@+id/textView_unscrambled_word"
+           ...
+           android:text="@{gameViewModel.currentScrambledWord}"
+           .../>
+       ...
+   </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+
+// in contoller
+private val viewModel: GameViewModel by viewModels()
+binding.gameViewModel = viewmodel
+```
+
+
 ### LiveData
 LiveData는 수명 주기를 인식하는 관찰 가능한 데이터 홀더 클래스  
 모든 유형의 데이터에 사용할 수 있는 래퍼  
