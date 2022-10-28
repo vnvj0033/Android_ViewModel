@@ -70,18 +70,6 @@ class GameFragment : Fragment() {
         binding.skip.setOnClickListener {
             onSkipWord()
         }
-
-        viewModel.currentWordCount.observe(viewLifecycleOwner) { newWordCount ->
-            binding.wordCount.text = getString(R.string.word_count, newWordCount, MAX_NO_OF_WORDS)
-        }
-
-        viewModel.score.observe(viewLifecycleOwner) { newScore ->
-            binding.score.text = getString(R.string.score, newScore)
-        }
-
-        viewModel.currentScrambledWord.observe(viewLifecycleOwner) { newWord ->
-            binding.textViewUnscrambledWord.text = newWord
-        }
     }
 
     /*
