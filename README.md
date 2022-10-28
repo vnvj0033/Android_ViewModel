@@ -1,9 +1,27 @@
+
+### LiveData
+LiveData는 수명 주기를 인식하는 관찰 가능한 데이터 홀더 클래스  
+모든 유형의 데이터에 사용할 수 있는 래퍼  
+객체에서 보유한 데이터가 변경되면 관찰자에 알림 제공  
+수명 주기를 인식
+
+```kotlin
+// in ViewModel
+private val currentScrambledWord = MutableLiveData<String>()
+
+// use Activity or Fragment
+viewModel.currentScrambledWord.observe(viewLifecycleOwner) { newWord ->
+    binding.textViewUnscrambledWord.text = newWord
+}
+
+```
+
 ### ViewModel lifecycle
-위에서 아래로 생명 주기가 흐른다.
-Activity - onCreated
-ViewModel created
-Activity - onDestroy
-ViewModel - onCleared
+다음 순서로 생명 주기가 흐른다.  
+Activity - onCreated  
+ViewModel created  
+Activity - onDestroy  
+ViewModel - onCleared  
 
 ### ViewModel 추가
 ```
