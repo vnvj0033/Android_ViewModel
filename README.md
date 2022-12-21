@@ -1,6 +1,6 @@
 
 ### StateFlow with SavedStateHandle
-StateFlow는 관찰 가능한 변경 가능 상태를 유지하도록 지원 (Flow로 사용하는 LiveData)
+StateFlow는 관찰 가능한 변경 가능 상태를 유지하도록 지원 (Flow로 사용하는 LiveData)</br>
 SavedStateHandle는 viewmodel-ktx:2.5.0 이상부터 getStateFlow지원
 ```kotlin
 // StateFlow Helper Class
