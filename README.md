@@ -1,6 +1,41 @@
 
-### LiveData with DataBinding
+### StateFlow with SavedStateHandle
+StateFlow는 관찰 가능한 변경 가능 상태를 유지하도록 지원 (Flow로 사용하는 LiveData)
+SavedStateHandle는 viewmodel-ktx:2.5.0 이상부터 getStateFlow지원
+```kotlin
+// StateFlow Helper Class
+class SavedMutableStateFlow<T>(
+    private val savedStateHandle: SavedStateHandle,
+    private val key: String,
+    initialValue: T,
+) {
+    private val state: StateFlow<T> = savedStateHandle.getStateFlow(key, initialValue)
+    var value: T
+        get() = state.value
+        set(value) {
+            savedStateHandle[key] = value
+        }
+    fun asStateFlow(): StateFlow<T> = state
+}
+// StateFlow Helper function
+fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SavedMutableStateFlow<T> =
+    SavedMutableStateFlow(this, key, initialValue)
+
+// use in ViewModel
+private val _score = sharedHandler.getMutableStateFlow("score", 0)
+val score: StateFlow<Int>
+    get() = _score.asStateFlow()
+
+// flow as StateFlow
+// flow에서 stateIn을 사용해 StateFlow 생성 
+val currentScrambledWord: StateFlow<Spannable>
+    get() = _currentScrambledWord.asStateFlow().map { scrambledWord ->
+        //...
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SpannableString(""))
 ```
+
+### LiveData with DataBinding
+```groovy
 // in build.gradle(Module)
 plugins {
    id 'com.android.application'
@@ -9,17 +44,16 @@ plugins {
 }
 
 android {
-    ...
+    //...
     buildFeatures {
         dataBinding = true
     }
-    ...
+    //...
 }
-
-// add xml tag <layout><data></data></layout> in activity 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-   xmlns:app="http://schemas.android.com/apk/res-auto"
-   xmlns:tools="http://schemas.android.com/tools">
+```
+```xml
+<!-- add xml tag <layout><data></data></layout> in activity -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
    <data>
        <variable
@@ -32,13 +66,14 @@ android {
        android:layout_height="match_parent">
        <TextView
            android:id="@+id/textView_unscrambled_word"
-           ...
            android:text="@{gameViewModel.currentScrambledWord}"
-           .../>
-       ...
+            <!--...-->
+       />
+       <!--...-->
    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-
+```
+```kotlin
 // in contoller
 private val viewModel: GameViewModel by viewModels()
 binding.gameViewModel = viewmodel
@@ -70,7 +105,7 @@ Activity - onDestroy
 ViewModel - onCleared  
 
 ### ViewModel 추가
-```
+```kotlin
 // add dependencie
 implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
