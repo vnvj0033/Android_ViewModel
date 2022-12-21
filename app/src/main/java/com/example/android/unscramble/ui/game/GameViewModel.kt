@@ -1,8 +1,9 @@
 package com.example.android.unscramble.ui.game
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.TtsSpan
+import androidx.lifecycle.*
 
 /**
  * ViewModel containing the app data and methods to process the data
@@ -17,8 +18,21 @@ class GameViewModel : ViewModel(){
         get() = _currentWordCount
 
     private val _currentScrambledWord = MutableLiveData<String>()
-    val currentScrambledWord: LiveData<String>
-        get() = _currentScrambledWord
+    val currentScrambledWord: LiveData<Spannable> = _currentScrambledWord.map {
+        if (it.isNullOrEmpty()) {
+            SpannableString("")
+        } else {
+            val scrambledWord = it.toString()
+            val spannable: Spannable = SpannableString(scrambledWord)
+            spannable.setSpan(
+                TtsSpan.VerbatimBuilder(scrambledWord).build(),
+                0,
+                scrambledWord.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            spannable
+        }
+    }
 
     // List of words used in the game
     private var wordsList: MutableList<String> = mutableListOf()
