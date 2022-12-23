@@ -16,16 +16,18 @@ import kotlin.random.Random
 /**
  * ViewModel containing the app data and methods to process the data
  */
-class GameViewModel(sharedHandler: SavedStateHandle) : ViewModel(){
-    private val _score = sharedHandler.getMutableStateFlow("score", 0)
+class GameViewModel(
+    stateHandler: SavedStateHandle
+) : ViewModel(){
+    private val _score = stateHandler.getMutableStateFlow("score", 0)
     val score: StateFlow<Int>
         get() = _score.asStateFlow()
 
-    private val _currentWordCount = sharedHandler.getMutableStateFlow("currentWordCount",0)
+    private val _currentWordCount = stateHandler.getMutableStateFlow("currentWordCount",0)
     val currentWordCount: StateFlow<Int>
         get() = _currentWordCount.asStateFlow()
 
-    private val _currentScrambledWord = sharedHandler.getMutableStateFlow("currentScrambledWord", "")
+    private val _currentScrambledWord = stateHandler.getMutableStateFlow("currentScrambledWord", "")
     val currentScrambledWord: StateFlow<Spannable>
         get() = _currentScrambledWord.asStateFlow().map { scrambledWord ->
             SpannableString(scrambledWord).apply {

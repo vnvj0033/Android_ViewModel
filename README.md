@@ -22,7 +22,7 @@ fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): Save
     SavedMutableStateFlow(this, key, initialValue)
 
 // use in ViewModel
-private val _score = sharedHandler.getMutableStateFlow("score", 0)
+private val _score = stateHandler.getMutableStateFlow("score", 0)
 val score: StateFlow<Int>
     get() = _score.asStateFlow()
 
