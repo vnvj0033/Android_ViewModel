@@ -17,7 +17,7 @@ import kotlin.random.Random
  * ViewModel containing the app data and methods to process the data
  */
 class GameViewModel(
-    stateHandler: SavedStateHandle
+    private val stateHandler: SavedStateHandle
 ) : ViewModel(){
     private val _score = stateHandler.getMutableStateFlow("score", 0)
     val score: StateFlow<Int>
@@ -41,8 +41,17 @@ class GameViewModel(
         }.stateIn(viewModelScope, SharingStarted.Eagerly, SpannableString(""))
 
     // List of words used in the game
-    private var wordsList: MutableList<String> = mutableListOf()
-    private lateinit var currentWord: String
+    private var wordsList: List<String>
+        get() = stateHandler["wordsList"] ?: emptyList()
+        set(value) {
+            stateHandler["wordsList"] = value
+        }
+
+    private var currentWord: String
+        get() = stateHandler["currentWord"] ?: ""
+        set(value) {
+            stateHandler["currentWord"] = value
+        }
 
     init {
         getNextWord()
@@ -64,7 +73,7 @@ class GameViewModel(
         } else {
             _currentScrambledWord.value = String(tempWord)
             _currentWordCount.value = _currentWordCount.value.inc()
-            wordsList.add(currentWord)
+            wordsList = wordsList + currentWord
         }
     }
 
@@ -74,7 +83,7 @@ class GameViewModel(
     fun reinitializeData() {
         _score.value = 0
         _currentWordCount.value = 0
-        wordsList.clear()
+        wordsList = emptyList()
         getNextWord()
     }
 
