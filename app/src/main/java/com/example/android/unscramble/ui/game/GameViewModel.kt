@@ -1,12 +1,18 @@
 package com.example.android.unscramble.ui.game
 
+import android.app.Application
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TtsSpan
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedStateRegistryOwner
+import com.example.android.unscramble.data.GameRepository
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 
@@ -14,11 +20,17 @@ import kotlin.random.Random
  * ViewModel containing the app data and methods to process the data
  */
 class GameViewModel(
-    private val stateHandler: SavedStateHandle
+    private val stateHandler: SavedStateHandle,
+    private val repository: GameRepository
 ) : ViewModel(){
+
     private val _score = stateHandler.getMutableStateFlow("score", 0)
     val score: StateFlow<Int>
         get() = _score.asStateFlow()
+
+    val highScore: StateFlow<Int> = repository.highScore.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), 0
+    )
 
     private val _currentWordCount = stateHandler.getMutableStateFlow("currentWordCount",0)
     val currentWordCount: StateFlow<Int>
@@ -80,6 +92,10 @@ class GameViewModel(
     */
     private fun increaseScore() {
         _score.value += SCORE_INCREASE
+
+        viewModelScope.launch {
+            repository.updateScore(_score.value)
+        }
     }
 
     /*
@@ -107,6 +123,30 @@ class GameViewModel(
             true
         } else false
     }
+}
+
+
+class GameViewModelFactory(
+    private val application: Application,
+    owner: SavedStateRegistryOwner,
+    defaultArgs: Bundle? = null
+): AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    override fun <T : ViewModel> create(
+        key: String,
+        modelClass: Class<T>,
+        handle: SavedStateHandle
+    ): T {
+        require(modelClass.isAssignableFrom(GameViewModel::class.java)) {
+            "Unknown ViewModel class"
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        return GameViewModel(
+            stateHandler = handle,
+            repository = GameRepository(application)
+        ) as T
+    }
+
 }
 
 class SavedMutableStateFlow<T>(
