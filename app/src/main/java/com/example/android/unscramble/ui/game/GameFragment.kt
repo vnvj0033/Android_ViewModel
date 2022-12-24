@@ -67,6 +67,8 @@ class GameFragment : Fragment() {
         binding.skip.setOnClickListener {
             onSkipWord()
         }
+
+        binding.executePendingBindings()
     }
 
     /*
