@@ -1,25 +1,22 @@
 package com.example.android.unscramble.ui.game
 
-import android.app.Application
-import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TtsSpan
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
 import com.example.android.unscramble.data.GameRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.random.Random
 
 /**
  * ViewModel containing the app data and methods to process the data
  */
-class GameViewModel(
+class GameViewModel @Inject constructor(
     private val stateHandler: SavedStateHandle,
     private val repository: GameRepository
 ) : ViewModel(){
@@ -124,44 +121,3 @@ class GameViewModel(
         } else false
     }
 }
-
-
-class GameViewModelFactory(
-    private val application: Application,
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null
-): AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-    override fun <T : ViewModel> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: SavedStateHandle
-    ): T {
-        require(modelClass.isAssignableFrom(GameViewModel::class.java)) {
-            "Unknown ViewModel class"
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        return GameViewModel(
-            stateHandler = handle,
-            repository = GameRepository(application)
-        ) as T
-    }
-
-}
-
-class SavedMutableStateFlow<T>(
-    private val savedStateHandle: SavedStateHandle,
-    private val key: String,
-    initialValue: T,
-) {
-    private val state: StateFlow<T> = savedStateHandle.getStateFlow(key, initialValue)
-    var value: T
-        get() = state.value
-        set(value) {
-            savedStateHandle[key] = value
-        }
-    fun asStateFlow(): StateFlow<T> = state
-}
-
-fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SavedMutableStateFlow<T> =
-    SavedMutableStateFlow(this, key, initialValue)

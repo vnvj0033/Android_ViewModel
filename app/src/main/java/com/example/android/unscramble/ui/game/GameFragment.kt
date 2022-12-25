@@ -16,26 +16,26 @@
 
 package com.example.android.unscramble.ui.game
 
-import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import com.example.android.unscramble.MainActivity
 import com.example.android.unscramble.R
 import com.example.android.unscramble.databinding.GameFragmentBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import javax.inject.Inject
 
 /**
  * Fragment where the game is played, contains the game logic.
  */
 class GameFragment : Fragment() {
 
-    private val viewModel: GameViewModel by viewModels() {
-        GameViewModelFactory(context?.applicationContext as Application, this)
-    }
+    @Inject
+    lateinit var viewModel: GameViewModel
 
     // Binding object instance with access to the views in the game_fragment.xml layout
     private lateinit var binding: GameFragmentBinding
@@ -43,6 +43,11 @@ class GameFragment : Fragment() {
     // Create a ViewModel the first time the fragment is created.
     // If the fragment is re-created, it receives the same GameViewModel instance created by the
     // first fragment
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainActivity).gameComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

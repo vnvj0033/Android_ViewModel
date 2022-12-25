@@ -1,13 +1,11 @@
 package com.example.android.unscramble.data
 
-import android.app.Application
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-
-class GameRepository(
-    application: Application,
-    private val dataSource: GameDataSource = GameDataSource(application)
+class GameRepository @Inject constructor(
+    private val dataSource: GameDataSource
 ) {
     val highScore: Flow<Int> = dataSource.gamePreferencesFlow.map { preferences -> preferences.highScore }
 
@@ -15,5 +13,3 @@ class GameRepository(
         dataSource.updateHighScore(score)
     }
 }
-
-
