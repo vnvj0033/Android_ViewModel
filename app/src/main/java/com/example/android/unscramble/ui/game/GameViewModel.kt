@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.unscramble.data.GameRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -16,6 +17,7 @@ import kotlin.random.Random
 /**
  * ViewModel containing the app data and methods to process the data
  */
+@HiltViewModel
 class GameViewModel @Inject constructor(
     private val stateHandler: SavedStateHandle,
     private val repository: GameRepository
