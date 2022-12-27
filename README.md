@@ -29,7 +29,7 @@ class GameDataSource (context: Context) {
     }
 }
 
-// use to
+// use in ViewModel
 val repository = GameRepository(application)
 val highScore: StateFlow<Int> = repository.highScore.stateIn(
     viewModelScope, SharingStarted.WhileSubscribed(), 0
