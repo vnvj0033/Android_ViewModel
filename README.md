@@ -1,4 +1,35 @@
 
+### Domain Layer - datastore preferences
+primitive type 로컬에 저장
+```groovy
+// add dependencies
+implementation "androidx.datastore:datastore-preferences:1.0.0"
+```
+```kotlin
+// in GamePreferences
+data class GamePreferences(
+    val highScore: Int
+)
+object PreferenceKeys {
+    val HIGH_SCORE = intPreferencesKey("high_score")
+}
+val Context.gameDataStore by preferencesDataStore(
+    name = "GamePreferences"
+)
+
+// if use Flow to load
+val gamePreferencesFlow: Flow<GamePreferences> = dataStore.data.map { preferences ->
+    val highScore = preferences[PreferenceKeys.HIGH_SCORE] ?: 0
+    GamePreferences(highScore = highScore) // return
+}
+// use to save
+val score = 100
+dataStore.edit { preferences ->
+    preferences[PreferenceKeys.HIGH_SCORE] = score
+}
+
+```
+
 ### StateFlow with SavedStateHandle
 StateFlow는 관찰 가능한 변경 가능 상태를 유지하도록 지원 (Flow로 사용하는 LiveData)</br>
 SavedStateHandle는 viewmodel-ktx:2.5.0 이상부터 getStateFlow지원
