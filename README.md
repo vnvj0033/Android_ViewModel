@@ -1,5 +1,46 @@
 
-### Domain Layer - datastore preferences
+### Repository and DataSource
+```kotlin
+class GameRepository(
+    private val dataSource: GameDataSource
+) {
+    val highScore: Flow<Int> = dataSource.gamePreferencesFlow.map { preferences -> preferences.highScore }
+
+    suspend fun updateScore(score: Int) {
+        dataSource.updateHighScore(score)
+    }
+}
+
+class GameDataSource (context: Context) {
+    private val dataStore = context.gameDataStore
+
+    val gamePreferencesFlow: Flow<GamePreferences> = dataStore.data.map { preferences ->
+        val highScore = preferences[PreferenceKeys.HIGH_SCORE] ?: 0
+        GamePreferences(highScore = highScore)
+    }
+
+    suspend fun updateHighScore(score: Int) {
+        dataStore.edit { preferences ->
+            val currentHighScore = preferences[PreferenceKeys.HIGH_SCORE] ?: 0
+            if (currentHighScore < score) {
+                preferences[PreferenceKeys.HIGH_SCORE] = score
+            }
+        }
+    }
+}
+
+// use to
+val repository = GameRepository(application)
+val highScore: StateFlow<Int> = repository.highScore.stateIn(
+    viewModelScope, SharingStarted.WhileSubscribed(), 0
+)
+viewModelScope.launch {
+    repository.updateScore(_score.value)
+}
+
+```
+
+### datastore preferences
 primitive type 로컬에 저장
 ```groovy
 // add dependencies
