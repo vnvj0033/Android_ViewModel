@@ -3,7 +3,7 @@ package com.example.android.unscramble.ui.game
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.StateFlow
 
-class SaveableMutableStateFlow<T>(
+class SavableMutableStateFlow<T>(
     private val savedStateHandle: SavedStateHandle,
     private val key: String,
     initialValue: T
@@ -16,5 +16,6 @@ class SaveableMutableStateFlow<T>(
         }
     fun asStateFlow(): StateFlow<T> = state
 }
-fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SaveableMutableStateFlow<T> =
-    SaveableMutableStateFlow(this, key, initialValue)
+
+fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SavableMutableStateFlow<T> =
+    SavableMutableStateFlow(this, key, initialValue)
