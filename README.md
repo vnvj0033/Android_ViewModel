@@ -1,4 +1,29 @@
 
+### HiltViewModel
+@HiltViewModel에서는 SavedStateHandle를 자동으로 주입해준다.
+by viewModels()를 이용한 생성은 Factory와 Inject를 수행하여 준다.
+```kotlin
+@HiltViewModel
+class GameViewModel @Inject constructor(
+    private val stateHandler: SavedStateHandle,
+    private val repository: GameRepository
+) : ViewModel()
+
+class GameRepository @Inject constructor(
+    private val dataSource: GameDataSource
+)
+
+class GameDataSource @Inject constructor(
+    @ApplicationContext context: Context
+)
+
+// use HiltViewModel
+@AndroidEntryPoint
+class GameFragment : Fragment() {
+    private val viewModel: GameViewModel by viewModels()
+}
+```
+
 ### Repository and DataSource
 ```kotlin
 class GameRepository(
