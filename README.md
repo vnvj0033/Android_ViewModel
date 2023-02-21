@@ -98,7 +98,9 @@ dataStore.edit { preferences ->
 
 ### StateFlow with SavedStateHandle
 StateFlow는 관찰 가능한 변경 가능 상태를 유지하도록 지원 (Flow로 사용하는 LiveData)</br>
-SavedStateHandle는 viewmodel-ktx:2.5.0 이상부터 getStateFlow지원
+StateFlow.value를 변경하여 옵저버에 이벤트 전달하고 동일 값은 변경되지 않음</br>
+SavedStateHandle는 액티비티 메모리 부족으로인한 파괴에도 데이터를 보존</br>
+SavedStateHandle.getStateFlow는 viewmodel-ktx:2.5.0 이상부터 지원
 ```kotlin
 // StateFlow Helper Class
 class SavedMutableStateFlow<T>(
